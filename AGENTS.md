@@ -87,6 +87,9 @@ binding: the gist plus the minute bucket is the caching story.
   and `NEXT_PUBLIC_ROBOTS=noindex` turns it off. Next reads that value at build time, so changing it
   needs a rebuild.
 - Icons are generated. Change `assets/icon.svg`, run `pnpm assets` and commit the output.
+- The Open Graph card is a screenshot of `og/og.html`, rendered by `pnpm og` with headless Chrome
+  into `public/og.png`. Change the copy in the html, rerun, and commit the png. It is a static card
+  on purpose: a build-time card cannot carry a location that changes daily.
 - `colors` in `site.ts` repeats the `oklch` tokens as hex because the manifest and `theme-color`
   need hex. Change both together.
 - `SITE_URL` must be set at build time as well as at runtime. `robots.txt` and `sitemap.xml` are
@@ -108,6 +111,7 @@ binding: the gist plus the minute bucket is the caching story.
 - `pnpm test` runs `node --test`.
 - `pnpm smoke` starts the dev server and checks that the route renders.
 - `pnpm assets` regenerates the icons from `assets/icon.svg`.
+- `pnpm og` regenerates the Open Graph card from `og/og.html`.
 - `pnpm boundaries` checks the port.
 - `pnpm display` checks the display face budget.
 - `pnpm preview` builds the Worker and runs it in workerd.

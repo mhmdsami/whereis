@@ -2,7 +2,7 @@ export const site = {
   name: "whereis",
   title: "where is sami?",
   tagline: "Where Sami is right now.",
-  description: "The current city, resolved from a public schedule that is edited by hand.",
+  description: "Get to know where Sami is now",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? process.env.SITE_URL ?? "http://localhost:3000",
   author: { name: "Sami", url: "https://sam1.space" },
   locale: "en",

@@ -14,7 +14,7 @@ Live at [whereis.sam1.space](https://whereis.sam1.space).
 | Styles | Tailwind v4, shadcn (`base-nova`) |
 | Type | Geist Mono for the readout, Geist Sans for prose |
 | Store | A public GitHub gist, plus a 12 hour edge snapshot of the last good read. No database |
-| Metadata | sitemap, robots, manifest |
+| Metadata | static OG card, sitemap, robots, manifest |
 
 ## How it reads the schedule
 
@@ -59,6 +59,7 @@ pnpm dev        # next dev
 pnpm preview    # build the Worker and run it in workerd
 pnpm deploy     # build and deploy to Cloudflare
 pnpm gate       # types, lint, boundaries, display, tests, build, smoke
+pnpm og         # re-render public/og.png from og/og.html
 ```
 
 Copy `.env.example` to `.dev.vars` for local work. `STATE_URL` is optional and overrides the gist.

@@ -17,6 +17,7 @@
     "test": "node --test",
     "smoke": "node scripts/smoke.mjs",
     "assets": "node scripts/generate-assets.mjs",
+    "og": "node scripts/render-og.mjs",
     "boundaries": "node scripts/check-boundaries.mjs",
     "display": "node scripts/check-display.mjs",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
