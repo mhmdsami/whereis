@@ -31,8 +31,11 @@ inclusive on both ends.
 2. A stop is active when `from <= today <= to`.
 3. If stops overlap, the one with the latest `from` wins. Boundary days are deliberate.
 4. If nothing is active, the page shows the most recent stop that already ended, labelled past.
-5. If there is no past stop either, it says `no stop scheduled`.
+5. If there is no past stop either, it says `no current stop`.
 6. A city is never inferred or interpolated.
+
+Under the current stop the page shows `next up`: the city after this stop and the day it starts.
+It disappears when the next city is the same one, or when the open-ended stop has no successor.
 
 The fetch uses `${url}?v=<floor(Date.now() / 60000)>` with `cache: "no-store"`, the same trick the
 portfolio uses, so a gist edit shows within about a minute without polling GitHub.

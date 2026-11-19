@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import { formatDay, resolveLocale, since } from "@/lib/format";
-import { activeStop, lastStop, loadState, TIME_ZONE_LABEL, today } from "@/lib/state";
+import { activeStop, lastStop, loadState, nextStop, TIME_ZONE_LABEL, today } from "@/lib/state";
 import { platform } from "@/platform";
 
 export const dynamic = "force-dynamic";
@@ -16,7 +16,10 @@ export default async function Page() {
   const current = activeStop(state?.stops);
   const past = current ? null : lastStop(state?.stops);
   const stop = current ?? past;
+  const next = nextStop(state?.stops);
+  const upcoming = next && next.city !== stop?.city ? next : null;
   const withYear = stop ? stop.to.slice(0, 4) !== day.slice(0, 4) : false;
+  const nextWithYear = upcoming ? upcoming.from.slice(0, 4) !== day.slice(0, 4) : false;
   const freshness = reading
     ? reading.fromCache
       ? `last good read ${since(reading.readAt)}`
@@ -60,9 +63,19 @@ export default async function Page() {
         ) : (
           <>
             <p className={`${label} text-text-tertiary`}>Schedule</p>
-            <h1 className="mt-3 font-mono text-2xl text-text-secondary">no stop scheduled</h1>
+            <h1 className="mt-3 font-mono text-2xl text-text-secondary">no current stop</h1>
           </>
         )}
+
+        {upcoming ? (
+          <div className="mt-10 flex items-baseline gap-4">
+            <p className="font-mono text-xs tracking-[0.18em] text-text-tertiary">next up</p>
+            <p className="font-mono text-sm text-text-tertiary">
+              <span className="text-text-secondary">{upcoming.city}</span> ·{" "}
+              <time dateTime={upcoming.from}>{formatDay(upcoming.from, locale, nextWithYear)}</time>
+            </p>
+          </div>
+        ) : null}
       </div>
 
       <footer className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 font-mono text-xs text-text-tertiary">

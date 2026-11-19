@@ -77,6 +77,38 @@ export function lastStop(stops: Array<Stop> | undefined, date = new Date()): Sto
   );
 }
 
+/**
+ * Where the person lands after the stop that covers `date`. Boundary days are shared
+ * between stops, so this looks at the day after the current stop ends rather than at
+ * the current stop's end date.
+ */
+export function nextStop(stops: Array<Stop> | undefined, date = new Date()): Stop | null {
+  if (!stops?.length) return null;
+
+  const current = activeStop(stops, date);
+  const base = current ? current.to : today(date);
+  const following = activeStop(stops, atDay(dayAfter(base)));
+
+  if (following) return following;
+
+  return (
+    [...stops]
+      .filter((stop) => stop.from > base)
+      .sort((a, b) => a.from.localeCompare(b.from))
+      .at(0) ?? null
+  );
+}
+
+function atDay(iso: string): Date {
+  return new Date(`${iso}T12:00:00Z`);
+}
+
+function dayAfter(iso: string): string {
+  const date = atDay(iso);
+  date.setUTCDate(date.getUTCDate() + 1);
+  return date.toISOString().slice(0, 10);
+}
+
 /** Parses the document whole: one malformed stop invalidates it rather than half a schedule. */
 export function parseState(value: unknown): SiteState | null {
   if (typeof value !== "object" || value === null) return null;

@@ -13,8 +13,11 @@ public gist and renders the stop that covers today.
 3. When stops overlap, the latest `from` wins. Boundary days are intentional.
 4. With nothing active, the page shows the most recent stop that has ended, labelled as past. It is
    never presented as current.
-5. With no past stop either, the page says `no stop scheduled`.
+5. With no past stop either, the page says `no current stop`.
 6. A city is never inferred or interpolated. No home city, no default.
+7. `nextStop` reports where the schedule lands after the current stop. It looks at the day after the
+   current stop ends, because boundary days are shared between adjacent stops. The page hides it when
+   the next city is the one already shown.
 
 `parseState` reads the document whole. One malformed stop, or a missing `stops` array, invalidates
 the document and the page renders `location unavailable`. Silence beats a wrong city.

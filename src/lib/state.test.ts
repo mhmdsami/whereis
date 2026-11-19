@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { SnapshotStore, Stop } from "./state.ts";
-import { activeStop, fetchSiteState, lastStop, loadState, parseState, today } from "./state.ts";
+import { activeStop, fetchSiteState, lastStop, loadState, nextStop, parseState, today } from "./state.ts";
 
 const stops: Array<Stop> = [
   { from: "2026-11-18", to: "2026-11-19", city: "Bengaluru", country: "India" },
@@ -196,4 +196,37 @@ test("loadState ignores a malformed snapshot", async () => {
   } finally {
     globalThis.fetch = original;
   }
+});
+
+test("nextStop looks past a shared boundary day", () => {
+  const schedule = [
+    { from: "2026-11-18", to: "2026-11-19", city: "Bengaluru", country: "India" },
+    { from: "2026-11-19", to: "2026-11-27", city: "Chennai", country: "India" },
+    { from: "2026-11-28", to: "2026-12-02", city: "Tirunelveli", country: "India" },
+  ];
+
+  assert.equal(activeStop(schedule, at("2026-11-18"))?.city, "Bengaluru");
+  assert.equal(nextStop(schedule, at("2026-11-18"))?.city, "Chennai");
+  assert.equal(nextStop(schedule, at("2026-11-20"))?.city, "Tirunelveli");
+});
+
+test("nextStop respects a stop that starts before the current one ends", () => {
+  const schedule = [
+    { from: "2026-11-01", to: "2026-11-05", city: "Chennai", country: "India" },
+    { from: "2026-11-04", to: "2026-11-08", city: "Riyadh", country: "Saudi Arabia" },
+  ];
+
+  assert.equal(nextStop(schedule, at("2026-11-03"))?.city, "Riyadh");
+});
+
+test("nextStop uses the next future stop when nothing is active", () => {
+  assert.equal(nextStop(stops, at("2026-12-01"))?.city, "Riyadh");
+});
+
+test("nextStop is null once the last stop has started", () => {
+  const schedule = [{ from: "2027-01-17", to: "2099-12-31", city: "Bengaluru", country: "India" }];
+
+  assert.equal(nextStop(schedule, at("2028-06-01")), null);
+  assert.equal(nextStop([], at("2028-06-01")), null);
+  assert.equal(nextStop(undefined, at("2028-06-01")), null);
 });
